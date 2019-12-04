@@ -1,0 +1,201 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+html {
+    height: 100%;
+    background-color: #f76b78;
+    overflow: hidden;
+    user-select: none;
+}
+
+body {
+    line-height: 1;
+    width: 100vw;
+    height: 100vh;
+}
+
+video::-webkit-media-controls {
+    display: none;
+}
+
+#scenario video {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translateX(calc((100% - 100vw) / 2));
+    z-index: -1;
+}
+
+.question-container {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-top: 5px solid rgba(255, 255, 255, 0.8);
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    transition: transform 1s, opacity 1s;
+    transform: translateY(200px);
+    opacity: 0;
+}
+
+.question-container.shown {
+    opacity: 1;
+    transform: none;
+}
+
+#answers {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 50px;
+}
+
+#answers button {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 0 10px;
+
+    color: white;
+    opacity: 0.5;
+    text-transform: uppercase;
+    font-size: 50px;
+
+    cursor: pointer;
+    transition: opacity 0.5s, border 0.5s;
+}
+
+#answers button:focus {
+    outline: none;
+}
+
+#answers button::-moz-focus-inner {
+    border: 0;
+}
+
+#answers button:hover {
+    opacity: 1;
+}
+
+#answers button:active {
+    /* border-bottom: 3px solid white; */
+    padding: 0 10px;
+}
+
+#answers button::after {
+    display: block;
+    content: '';
+    height: 7px;
+    background: radial-gradient(closest-side, white 20%, transparent);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+#answers button:hover::after {
+    opacity: 1;
+}
