@@ -68,15 +68,22 @@ class App {
                        </button>`)
             .join('');
 
-        const questionContainer = document.querySelector('#scenario .question-container');
-        questionContainer.classList.remove('shown');
+        this.toggleOverlay(false);
 
         if (question.introVideo) {
             this.playVideoSequence(question.introVideo)
-                .then(() => questionContainer.classList.add('shown'));
+                .then(() => this.toggleOverlay(true));
         } else {
-            questionContainer.classList.add('shown');
+            this.toggleOverlay(true);
         }
+    }
+
+    toggleOverlay(show) {
+        const motive = document.querySelector('.motive');
+        const questionContainer = document.querySelector('.question-container');
+
+        motive.classList.toggle('shown', !!this.question.image && show);
+        questionContainer.classList.toggle('shown', show);
     }
 
     constructor() {
@@ -137,7 +144,7 @@ class App {
      * @memberof App
      */
     async onAnswerClicked(answerId) {
-        document.querySelector('#scenario .question-container').classList.remove('shown');
+        this.toggleOverlay(false);
 
         this.answers.push(answerId);
 

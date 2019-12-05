@@ -41,7 +41,6 @@
 const questions = [{
         id: 1,
         description: null,
-        type: 'scenario',
         introVideo: [{
                 path: 'music-intro.webm',
                 ambiencePath: null
@@ -98,7 +97,6 @@ const questions = [{
     {
         id: 3,
         description: null,
-        type: 'scenario',
         introVideo: [{
                 path: 'shrink-dream.webm',
                 ambiencePath: null
@@ -130,7 +128,6 @@ const questions = [{
     },
     {
         id: 5,
-        type: 'images',
         answers: [{
                 id: 8,
                 image: 'logo.png'
@@ -142,6 +139,24 @@ const questions = [{
             {
                 id: 10,
                 image: 'logo.png'
+            }
+        ]
+    },
+    {
+        id: 6,
+        description: 'How does this motive make you feel?',
+        image: 'logo.png',
+        answers: [{
+                id: 11,
+                text: 'Good'
+            },
+            {
+                id: 12,
+                text: 'Indifferent'
+            },
+            {
+                id: 13,
+                text: 'Bad'
             }
         ]
     }
