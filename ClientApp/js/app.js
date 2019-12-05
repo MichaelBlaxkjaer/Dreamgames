@@ -34,7 +34,8 @@ import {
  * 
  * @typedef {Object} Answer
  * @property {number} id
- * @property {string} content
+ * @property {string} text
+ * @property {string} image
  * @property {VideoSequence} outroVideo
  * @property {Question|null} followUp
  */
@@ -57,17 +58,25 @@ class App {
 
         const question = this.question;
 
-        document.getElementById('question').innerText = question.description;
+        document.getElementById('question').innerText = question.description || '';
 
         const answerContainer = document.getElementById('answers');
         answerContainer.innerHTML = question.answers
-            .map(a => `<button answer-id="${a.id}">${a.content}</button>`)
+            .map(a => `<button answer-id="${a.id}">
+                         ${a.image ? `<img src="assets/${a.image}" ${a.text ? `alt="${a.text}"` : ''} />` : ''}
+                         ${a.text || ''}
+                       </button>`)
             .join('');
 
         const questionContainer = document.querySelector('#scenario .question-container');
         questionContainer.classList.remove('shown');
-        this.playVideoSequence(question.introVideo)
-            .then(() => questionContainer.classList.add('shown'));
+
+        if (question.introVideo) {
+            this.playVideoSequence(question.introVideo)
+                .then(() => questionContainer.classList.add('shown'));
+        } else {
+            questionContainer.classList.add('shown');
+        }
     }
 
     constructor() {
@@ -78,16 +87,17 @@ class App {
 
         const answerContainer = document.getElementById('answers');
         answerContainer.addEventListener('click', e => {
-            if (!this.player.ended)
+            if (!this.player.ended || e.target === answerContainer)
                 return;
 
-            const answerId = e.target.getAttribute('answer-id');
+            const button = e.target.closest('button');
+            const answerId = button.getAttribute('answer-id');
             this.onAnswerClicked(answerId);
         });
 
         document.addEventListener('keypress', e => {
             if (e.keyCode === 32) {
-                if (!this.player.ended)
+                if (!this.player.ended && this.player.duration !== NaN)
                     this.player.currentTime = this.player.duration;
             }
         });

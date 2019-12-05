@@ -28,7 +28,8 @@
  * 
  * @typedef {Object} Answer
  * @property {number} id
- * @property {string} content
+ * @property {string} text
+ * @property {string} image
  * @property {VideoSequence|null} outroVideo
  * @property {Question|null} followUp
  */
@@ -52,7 +53,7 @@ const questions = [{
         ],
         answers: [{
                 id: 1,
-                content: 'Rock',
+                text: 'Rock',
                 outroVideo: [{
                         path: 'music-enter-shrink.webm',
                         ambiencePath: 'rock.mp3'
@@ -66,7 +67,7 @@ const questions = [{
             },
             {
                 id: 2,
-                content: 'Pop',
+                text: 'Pop',
                 outroVideo: [{
                         path: 'music-enter-shrink.webm',
                         ambiencePath: 'pop.mp3'
@@ -80,7 +81,7 @@ const questions = [{
             },
             {
                 id: 3,
-                content: 'Jazz',
+                text: 'Jazz',
                 outroVideo: [{
                         path: 'music-enter-shrink.webm',
                         ambiencePath: 'jazz.mp3'
@@ -109,7 +110,7 @@ const questions = [{
         ],
         answers: [{
                 id: 6,
-                content: 'Enter',
+                text: 'Enter',
                 outroVideo: [{
                     path: 'spooky-enter.webm',
                     ambiencePath: 'ambience-spooky-outside.mp3'
@@ -118,12 +119,29 @@ const questions = [{
             },
             {
                 id: 7,
-                content: 'Leave',
+                text: 'Leave',
                 outroVideo: [{
                     path: 'spooky-leave.webm',
                     ambiencePath: 'ambience-spooky-outside.mp3'
                 }],
                 followUp: null
+            }
+        ]
+    },
+    {
+        id: 5,
+        type: 'images',
+        answers: [{
+                id: 8,
+                image: 'logo.png'
+            },
+            {
+                id: 9,
+                image: 'logo.png'
+            },
+            {
+                id: 10,
+                image: 'logo.png'
             }
         ]
     }
