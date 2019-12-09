@@ -47,7 +47,7 @@ const questions = [{
             },
             {
                 path: 'music-streets.webm',
-                ambiencePath: 'ambience-streets.mp3'
+                ambiencePath: 'city-ambience.mp3'
             }
         ],
         answers: [{
@@ -103,7 +103,7 @@ const questions = [{
             },
             {
                 path: 'spooky-intro.webm',
-                ambiencePath: 'ambience-spooky-outside.mp3'
+                ambiencePath: null
             }
         ],
         answers: [{
@@ -111,7 +111,7 @@ const questions = [{
                 text: 'Enter',
                 outroVideo: [{
                     path: 'spooky-enter.webm',
-                    ambiencePath: 'ambience-spooky-outside.mp3'
+                    ambiencePath: null
                 }],
                 followUp: null
             },
@@ -120,7 +120,7 @@ const questions = [{
                 text: 'Leave',
                 outroVideo: [{
                     path: 'spooky-leave.webm',
-                    ambiencePath: 'ambience-spooky-outside.mp3'
+                    ambiencePath: null
                 }],
                 followUp: null
             }

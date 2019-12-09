@@ -74,6 +74,7 @@ class App {
             this.playVideoSequence(question.introVideo)
                 .then(() => this.toggleOverlay(true));
         } else {
+            this.audio.pause();
             this.toggleOverlay(true);
         }
     }
@@ -88,6 +89,10 @@ class App {
 
     constructor() {
         this.player = document.querySelector('#scenario video');
+
+        this.audio = new Audio();
+        this.audio.loop = true;
+
         this.api = new DreamApi();
 
         this.api.getQuestions().then(questions => this.questions = questions);
@@ -116,6 +121,14 @@ class App {
     }
 
     playVideoAsync(video) {
+        if (!video.ambiencePath)
+            this.audio.pause();
+        else if (this.audio.src !== video.ambiencePath)
+            this.audio.src = `assets/${video.ambiencePath}`;
+
+        if (video.ambiencePath)
+            this.audio.play();
+
         return new Promise((resolve, reject) => {
             this.player.src = `assets/${video.path}`;
             this.player.onended = resolve;
