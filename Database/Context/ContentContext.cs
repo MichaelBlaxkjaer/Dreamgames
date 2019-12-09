@@ -17,6 +17,7 @@ namespace DreamGames.Database.Context
         {
 
         }
+        //All DbSets seen here are tables in the database, the tables have the same name as each DbSet
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Scenario> Scenarios { get; set; }
@@ -25,6 +26,8 @@ namespace DreamGames.Database.Context
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<VideoSequence> VideoSequences { get; set; }
+        //When using add-migration command, it will use the data under here
+        //to populate the database with some information.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Scenario>().HasData(

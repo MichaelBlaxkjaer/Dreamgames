@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using DreamGames.Database.Context;
 using DreamGames.Database.Scenarios;
 
-namespace DreamGamesAPI.Controllers
+namespace DreamGames.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -25,6 +25,9 @@ namespace DreamGamesAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Scenario>>> GetScenarios()
         {
+            //Here I populate variables with information from the database.
+            //The reason I do it here is to avoid sending out a new call
+            //Each time the for loop, loops.
             var scenarios = _context.Scenarios.ToList();
             var answers = _context.Answers.ToList();
             var questions = _context.Questions.ToList();
@@ -71,6 +74,15 @@ namespace DreamGamesAPI.Controllers
             }
 
             return scenario;
+        }
+
+        //Here we get the the next question by sending along the number inside the variable called "FollowUpQuestionId"
+        // GET: api/Scenarios/GetFollowUpQuestion/1
+        [HttpGet("GetFollowUpQuestion/{id}")]
+        public async Task<ActionResult<Question>> GetFollowUpQuestion(int id)
+        {
+
+            return await _context.Questions.FindAsync(id); ;
         }
 
         // PUT: api/Scenarios/5
