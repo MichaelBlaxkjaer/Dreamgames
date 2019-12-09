@@ -1,4 +1,7 @@
-using dreamgames.Data;
+using DreamGamesAPI.Database.Context;
+using DreamGamesAPI.Database.DataControl;
+using DreamGamesAPI.Database.Scenarios;
+using DreamGamesAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +25,10 @@ namespace dreamgames
         {
             services.AddControllersWithViews();
 
-            services.AddDbContext<GameContext>(options =>
+            services.AddDbContext<ContentContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("Default")));
+
+            services.AddScoped<IDataRepository<Scenario>, ScenarioControl>();
 
             services.AddSpaStaticFiles(configuration =>
             {
