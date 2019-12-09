@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DreamGamesAPI.Database.Scenarios
+namespace DreamGames.Database.Scenarios
 {
     public class Answer
     {
@@ -11,7 +11,7 @@ namespace DreamGamesAPI.Database.Scenarios
         public int Id { get; set; }
         public string Text { get; set; }
         public string ImagePath { get; set; }
-        public string OutroVideo { get; set; }
+        public int OutroVideo { get; set; }
         public int QuestionId { get; set; }
         public int AnswerOrder { get; set; }
         public int FollowUpQuestionId { get; set; }

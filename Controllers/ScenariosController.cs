@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using DreamGamesAPI.Database.Context;
-using DreamGamesAPI.Database.Scenarios;
+using DreamGames.Database.Context;
+using DreamGames.Database.Scenarios;
 
 namespace DreamGamesAPI.Controllers
 {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DreamGamesAPI.Database.Scenarios
+namespace DreamGames.Database.Scenarios
 {
     public class Sound
     {

@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DreamGamesAPI.Database.Games;
-using DreamGamesAPI.Database.Scenarios;
+using DreamGames.Database.Games;
+using dreamgames.Database.Scenarios;
+using DreamGames.Database.Scenarios;
 using Microsoft.EntityFrameworkCore;
 
-namespace DreamGamesAPI.Database.Context
+namespace DreamGames.Database.Context
 {
     public class ContentContext : DbContext
     { 
@@ -23,6 +24,7 @@ namespace DreamGamesAPI.Database.Context
         public DbSet<TagPoint> TagPoints { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<VideoSequence> VideoSequences { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Scenario>().HasData(
@@ -48,7 +50,7 @@ namespace DreamGamesAPI.Database.Context
                         AnswerOrder = 1,
                         FollowUpQuestionId = 1,
                         ImagePath = "A Path",
-                        OutroVideo = "Outro Vid",
+                        OutroVideo = 1,
                         QuestionId = 1,
                         
                         Text = "Text"
@@ -88,6 +90,13 @@ namespace DreamGamesAPI.Database.Context
                  new Tag(){Id = 8, TagName = "Horror", Slug = "horror", RawGTagId = 16 },
                  new Tag(){Id = 9, TagName = "Fantasy", Slug = "fantasy", RawGTagId = 64 }
                  );
+             modelBuilder.Entity<VideoSequence>().HasData(
+                 new VideoSequence()
+                 {
+                     Id = 1,
+                     Order = 1,
+                     VideoId = 1
+                 });
         }
     }
 }

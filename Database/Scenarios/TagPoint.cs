@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using DreamGamesAPI.Database.Games;
+using DreamGames.Database.Games;
 
-namespace DreamGamesAPI.Database.Scenarios
+namespace DreamGames.Database.Scenarios
 {
     public class TagPoint
     {

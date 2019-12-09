@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DreamGamesAPI.Database.Context;
-using DreamGamesAPI.Database.Scenarios;
+using DreamGames.Database.Context;
+using DreamGames.Database.Scenarios;
 using DreamGamesAPI.Repository;
 
-namespace DreamGamesAPI.Database.DataControl
+namespace DreamGames.Database.DataControl
 {
     public class ScenarioControl : IDataRepository<Scenario>
     {

@@ -2,7 +2,7 @@
 
 namespace dreamgames.Migrations
 {
-    public partial class Initialmigration : Migration
+    public partial class DreamGamesAp : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,7 +14,7 @@ namespace dreamgames.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Text = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
-                    OutroVideo = table.Column<string>(nullable: true),
+                    OutroVideo = table.Column<int>(nullable: false),
                     QuestionId = table.Column<int>(nullable: false),
                     AnswerOrder = table.Column<int>(nullable: false),
                     FollowUpQuestionId = table.Column<int>(nullable: false)
@@ -31,7 +31,9 @@ namespace dreamgames.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ScenarioId = table.Column<int>(nullable: false),
+                    IntroVideoId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true),
+                    MotivePath = table.Column<string>(nullable: true),
                     Ordering = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -113,15 +115,29 @@ namespace dreamgames.Migrations
                     table.PrimaryKey("PK_Videos", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "VideoSequences",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    VideoId = table.Column<int>(nullable: false),
+                    Order = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VideoSequences", x => x.Id);
+                });
+
             migrationBuilder.InsertData(
                 table: "Answers",
                 columns: new[] { "Id", "AnswerOrder", "FollowUpQuestionId", "ImagePath", "OutroVideo", "QuestionId", "Text" },
-                values: new object[] { 1, 1, 1, "A Path", "Outro Vid", 1, "Text" });
+                values: new object[] { 1, 1, 1, "A Path", 1, 1, "Text" });
 
             migrationBuilder.InsertData(
                 table: "Questions",
-                columns: new[] { "Id", "Description", "Ordering", "ScenarioId" },
-                values: new object[] { 1, "Description", 1, 1 });
+                columns: new[] { "Id", "Description", "IntroVideoId", "MotivePath", "Ordering", "ScenarioId" },
+                values: new object[] { 1, "Description", 0, null, 1, 1 });
 
             migrationBuilder.InsertData(
                 table: "Scenarios",
@@ -184,6 +200,11 @@ namespace dreamgames.Migrations
                 values: new object[] { 9, 64, "fantasy", "Fantasy" });
 
             migrationBuilder.InsertData(
+                table: "VideoSequences",
+                columns: new[] { "Id", "Order", "VideoId" },
+                values: new object[] { 1, 1, 1 });
+
+            migrationBuilder.InsertData(
                 table: "Videos",
                 columns: new[] { "Id", "Order", "QuestionId", "UrlPath" },
                 values: new object[] { 1, 1, 1, "APathToAVideo" });
@@ -211,6 +232,9 @@ namespace dreamgames.Migrations
 
             migrationBuilder.DropTable(
                 name: "Videos");
+
+            migrationBuilder.DropTable(
+                name: "VideoSequences");
         }
     }
 }

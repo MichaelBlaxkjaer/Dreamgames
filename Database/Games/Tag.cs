@@ -1,4 +1,4 @@
-﻿namespace DreamGamesAPI.Database.Games
+﻿namespace DreamGames.Database.Games
 {
     public class Tag
     {

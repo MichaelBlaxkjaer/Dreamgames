@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DreamGamesAPI.Database.Games
+namespace DreamGames.Database.Games
 {
     public class Game
     {

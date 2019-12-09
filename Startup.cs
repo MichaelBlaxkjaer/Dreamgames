@@ -1,6 +1,6 @@
-using DreamGamesAPI.Database.Context;
-using DreamGamesAPI.Database.DataControl;
-using DreamGamesAPI.Database.Scenarios;
+using DreamGames.Database.Context;
+using DreamGames.Database.DataControl;
+using DreamGames.Database.Scenarios;
 using DreamGamesAPI.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
