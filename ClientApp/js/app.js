@@ -1,7 +1,3 @@
-import {
-    DreamApi
-} from './api.js'
-
 /**
  * A video.
  * 
@@ -37,8 +33,19 @@ import {
  * @property {string} text
  * @property {string} image
  * @property {VideoSequence} outroVideo
- * @property {Question|null} followUp
+ * @property {Question|null} followUpQuestion
  */
+
+class DreamApi {
+    constructor(baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    async getQuestions() {
+        const response = await fetch(`${this.baseUrl}/question`);
+        return await response.json();
+    }
+}
 
 class App {
 
@@ -63,7 +70,7 @@ class App {
         const answerContainer = document.getElementById('answers');
         answerContainer.innerHTML = question.answers
             .map(a => `<button answer-id="${a.id}">
-                         ${a.image ? `<img src="assets/${a.image}" ${a.text ? `alt="${a.text}"` : ''} />` : ''}
+                         ${a.imagePath ? `<img src="assets/${a.imagePath}" ${a.text ? `alt="${a.text}"` : ''} />` : ''}
                          ${a.text || ''}
                        </button>`)
             .join('');
@@ -79,27 +86,19 @@ class App {
         }
     }
 
-    toggleOverlay(show) {
-        const motive = document.querySelector('.motive');
-        const questionContainer = document.querySelector('.question-container');
-
-        motive.classList.toggle('shown', !!this.question.image && show);
-        questionContainer.classList.toggle('shown', show);
-    }
-
     constructor() {
         this.player = document.querySelector('#scenario video');
 
         this.audio = new Audio();
         this.audio.loop = true;
 
-        this.api = new DreamApi();
+        this.api = new DreamApi('https://localhost:5001/api');
 
         this.api.getQuestions().then(questions => this.questions = questions);
 
         const answerContainer = document.getElementById('answers');
         answerContainer.addEventListener('click', e => {
-            if (!this.player.ended || e.target === answerContainer)
+            if (this.player.playing || e.target === answerContainer)
                 return;
 
             const button = e.target.closest('button');
@@ -115,8 +114,16 @@ class App {
         });
     }
 
+    toggleOverlay(show) {
+        const motive = document.querySelector('.motive');
+        const questionContainer = document.querySelector('.question-container');
+
+        motive.classList.toggle('shown', !!this.question.image && show);
+        questionContainer.classList.toggle('shown', show);
+    }
+
     async playVideoSequence(sequence) {
-        for (const video of sequence)
+        for (const video of sequence.videos)
             await this.playVideoAsync(video);
     }
 
@@ -168,7 +175,7 @@ class App {
         if (answer.outroVideo)
             await this.playVideoSequence(answer.outroVideo);
 
-        if (answer.followUp)
+        if (answer.followUpQuestion)
             this.question = [...this.currentQuestionPath, answerIndex];
         else
             this.nextBaseQuestion();
@@ -204,7 +211,7 @@ class App {
         let node = this.questions[path[0]];
 
         for (const subindex of path.slice(1))
-            node = node.answers[subindex].followUp;
+            node = node.answers[subindex].followUpQuestion;
 
         return node;
     }
