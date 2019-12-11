@@ -1,0 +1,20 @@
+﻿@addTagHelper "*, Microsoft.AspNetCore.Mvc.TagHelpers"
+@*@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@using DreamGames.Database.Games;
+@model Tag
+
+
+    <form method="post" asp-controller="TagAdmin" asp-action="CreateTag">
+        <div><strong>Add tags</strong></div>
+        <label for="name">Tag name:</label>
+        <input asp-for="@Model.TagName" id="name"/>
+        <label for="name">Slug:</label>
+        <input asp-for="@Model.Slug" id="slug"/>
+        <label for="name">RawG tag ID:</label>
+        <input type="text" asp-for="@Model.RawGTagId" id="rawgTagId"/>
+        <input type="submit" value="Add"/>
+    </form>
