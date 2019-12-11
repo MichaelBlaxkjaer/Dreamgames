@@ -9,14 +9,63 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace dreamgames.Migrations
 {
     [DbContext(typeof(ContentContext))]
-    [Migration("20191210124535_Initial")]
-    partial class Initial
+    [Migration("20191211010108_ApiSync3")]
+    partial class ApiSync3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.0.1");
+
+            modelBuilder.Entity("DreamGames.Database.Games.Game", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("AvgRating")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("BackgroundImage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Trailer")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("DreamGames.Database.Games.Screenshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ScreenshotUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Screenshots");
+                });
 
             modelBuilder.Entity("DreamGames.Database.Games.Tag", b =>
                 {
@@ -143,7 +192,6 @@ namespace dreamgames.Migrations
                             Id = 1,
                             AnswerOrder = 1,
                             FollowUpQuestionId = 2,
-                            OutroVideoId = 1,
                             QuestionId = 1,
                             Text = "Text"
                         },
@@ -151,7 +199,6 @@ namespace dreamgames.Migrations
                         {
                             Id = 2,
                             AnswerOrder = 1,
-                            OutroVideoId = 1,
                             QuestionId = 2,
                             Text = "Some text"
                         });
@@ -186,6 +233,7 @@ namespace dreamgames.Migrations
                         {
                             Id = 1,
                             Description = "Description",
+                            IntroVideoId = 1,
                             Ordering = 1
                         },
                         new
@@ -256,16 +304,34 @@ namespace dreamgames.Migrations
                         {
                             Id = 1,
                             Order = 1,
-                            Path = "APathToAVideo",
+                            Path = "music-intro.webm",
                             VideoSequenceId = 1
                         },
                         new
                         {
                             Id = 2,
+                            AmbiencePath = "city-ambience.mp3",
                             Order = 2,
-                            Path = "APathToAVideo",
+                            Path = "music-streets.webm",
                             VideoSequenceId = 1
                         });
+                });
+
+            modelBuilder.Entity("dreamgames.Database.Games.GameTagJunction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameTagJunction");
                 });
 
             modelBuilder.Entity("dreamgames.Database.Scenarios.VideoSequence", b =>
@@ -320,7 +386,7 @@ namespace dreamgames.Migrations
 
             modelBuilder.Entity("DreamGames.Database.Scenarios.Video", b =>
                 {
-                    b.HasOne("dreamgames.Database.Scenarios.VideoSequence", "VideoSequence")
+                    b.HasOne("dreamgames.Database.Scenarios.VideoSequence", null)
                         .WithMany("Videos")
                         .HasForeignKey("VideoSequenceId");
                 });

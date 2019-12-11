@@ -2,10 +2,57 @@
 
 namespace dreamgames.Migrations
 {
-    public partial class Initial : Migration
+    public partial class ApiSync3 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GameId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
+                    BackgroundImage = table.Column<string>(nullable: true),
+                    AvgRating = table.Column<float>(nullable: false),
+                    Trailer = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GameTagJunction",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GameId = table.Column<int>(nullable: false),
+                    TagId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameTagJunction", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Screenshots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    GameId = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    ScreenshotUrl = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Screenshots", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Tags",
                 columns: table => new
@@ -137,11 +184,6 @@ namespace dreamgames.Migrations
             migrationBuilder.InsertData(
                 table: "Questions",
                 columns: new[] { "Id", "Description", "IntroVideoId", "MotivePath", "Ordering" },
-                values: new object[] { 1, "Description", null, null, 1 });
-
-            migrationBuilder.InsertData(
-                table: "Questions",
-                columns: new[] { "Id", "Description", "IntroVideoId", "MotivePath", "Ordering" },
                 values: new object[] { 2, "Another question", null, null, 1 });
 
             migrationBuilder.InsertData(
@@ -197,22 +239,27 @@ namespace dreamgames.Migrations
             migrationBuilder.InsertData(
                 table: "Answers",
                 columns: new[] { "Id", "AnswerOrder", "FollowUpQuestionId", "ImagePath", "OutroVideoId", "QuestionId", "Text" },
-                values: new object[] { 1, 1, 2, null, 1, 1, "Text" });
+                values: new object[] { 2, 1, null, null, null, 2, "Some text" });
+
+            migrationBuilder.InsertData(
+                table: "Questions",
+                columns: new[] { "Id", "Description", "IntroVideoId", "MotivePath", "Ordering" },
+                values: new object[] { 1, "Description", 1, null, 1 });
+
+            migrationBuilder.InsertData(
+                table: "Videos",
+                columns: new[] { "Id", "AmbiencePath", "Order", "Path", "VideoSequenceId" },
+                values: new object[] { 1, null, 1, "music-intro.webm", 1 });
+
+            migrationBuilder.InsertData(
+                table: "Videos",
+                columns: new[] { "Id", "AmbiencePath", "Order", "Path", "VideoSequenceId" },
+                values: new object[] { 2, "city-ambience.mp3", 2, "music-streets.webm", 1 });
 
             migrationBuilder.InsertData(
                 table: "Answers",
                 columns: new[] { "Id", "AnswerOrder", "FollowUpQuestionId", "ImagePath", "OutroVideoId", "QuestionId", "Text" },
-                values: new object[] { 2, 1, null, null, 1, 2, "Some text" });
-
-            migrationBuilder.InsertData(
-                table: "Videos",
-                columns: new[] { "Id", "AmbiencePath", "Order", "Path", "VideoSequenceId" },
-                values: new object[] { 1, null, 1, "APathToAVideo", 1 });
-
-            migrationBuilder.InsertData(
-                table: "Videos",
-                columns: new[] { "Id", "AmbiencePath", "Order", "Path", "VideoSequenceId" },
-                values: new object[] { 2, null, 2, "APathToAVideo", 1 });
+                values: new object[] { 1, 1, 2, null, null, 1, "Text" });
 
             migrationBuilder.InsertData(
                 table: "TagPoints",
@@ -252,6 +299,15 @@ namespace dreamgames.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Games");
+
+            migrationBuilder.DropTable(
+                name: "GameTagJunction");
+
+            migrationBuilder.DropTable(
+                name: "Screenshots");
+
             migrationBuilder.DropTable(
                 name: "TagPoints");
 

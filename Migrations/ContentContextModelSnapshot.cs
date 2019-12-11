@@ -16,6 +16,55 @@ namespace dreamgames.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.0.1");
 
+            modelBuilder.Entity("DreamGames.Database.Games.Game", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<float>("AvgRating")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("BackgroundImage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Slug")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Trailer")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Games");
+                });
+
+            modelBuilder.Entity("DreamGames.Database.Games.Screenshot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ScreenshotUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Screenshots");
+                });
+
             modelBuilder.Entity("DreamGames.Database.Games.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -264,6 +313,23 @@ namespace dreamgames.Migrations
                             Path = "music-streets.webm",
                             VideoSequenceId = 1
                         });
+                });
+
+            modelBuilder.Entity("dreamgames.Database.Games.GameTagJunction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("GameId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TagId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameTagJunction");
                 });
 
             modelBuilder.Entity("dreamgames.Database.Scenarios.VideoSequence", b =>

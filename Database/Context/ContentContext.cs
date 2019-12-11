@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dreamgames.Database.Games;
 using DreamGames.Database.Games;
 using dreamgames.Database.Scenarios;
 using DreamGames.Database.Scenarios;
@@ -24,6 +25,9 @@ namespace DreamGames.Database.Context
         public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<VideoSequence> VideoSequences { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<GameTagJunction> GameTagJunction { get; set; }
+        public DbSet<Screenshot> Screenshots { get; set; }
 
         //When using add-migration command, it will use the data under here
         //to populate the database with some information.
