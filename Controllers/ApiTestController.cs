@@ -100,7 +100,7 @@ namespace dreamgames.Controllers
               
                 foreach (var tag in tags)
                 {
-                    string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=5").Result.Value;
+                    string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=55").Result.Value;
                     var jsonObjects = JObject.Parse(response).SelectToken("results").Values<object>().ToList();
 
                     foreach (var item in jsonObjects)
