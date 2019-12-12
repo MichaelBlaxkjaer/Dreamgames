@@ -35,7 +35,6 @@
 </head>
 
 <body>
-  <div id="root">
     <div id="start">
         <svg class="logocontainer" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
              viewBox="0 0 339.9 177" style="enable-background:new 0 0 339.9 177;" xml:space="preserve">
@@ -336,10 +335,26 @@
       </div>
     </div>
     <div id="results" hidden>
-      Based on your answers we believe you might like:
-      <span id="gametitle"></span>
+      <div id="result-box">
+        <h1>Dr. Robot - Session Result</h1>
+        <h2>Your choices indicate<br>that your dream game is:</h2>
+        <h3 id="game-title"></h3>
+        
+        <section class="grid-container">
+          <img id="game-background" src="" alt="Poster" />
+
+          <section>
+            <p>Rating: <span id="game-rating"></span></p>	
+            <!-- <div class="game-link-button">
+              <a href="#">Visit website</a>
+            </div> -->
+          </section>
+        </section>
+          
+        <img src="assets/left.png" id="left-hand" alt="left hand" />
+        <img src="assets/right.png" id="right-hand" alt="right hand" />
+      </div>
     </div>
-  </div>
 </body>
 
 </html>

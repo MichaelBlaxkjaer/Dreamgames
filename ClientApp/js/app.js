@@ -272,7 +272,9 @@ class App {
         document.getElementById('results').hidden = false;
 
         const game = await this.api.getResult(this.answers);
-        document.getElementById('gametitle').innerText = game.title;
+        document.getElementById('game-title').innerText = game.title;
+        document.getElementById('game-background').setAttribute('src', game.backgroundImage);
+        document.getElementById('game-rating').innerText = game.avgRating;
     }
 
     /**
