@@ -5,6 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DreamGames.Database.Context;
 using DreamGames.Database.Scenarios;
+using DreamGames.Database.Games;
+using dreamgames.Classes;
+using System;
 
 namespace DreamGamesAPI.Controllers
 {
@@ -48,6 +51,35 @@ namespace DreamGamesAPI.Controllers
             }
 
             return scenario;
+        }
+
+        // GET: api/question/result
+        [HttpPost("result")]
+        public ActionResult<Game> GetResult(int[] answerIds)
+        {
+            var scores = ( 
+                from tag in _context.Tags.AsEnumerable()
+                join tagpoints in (
+                        from tagpoint in _context.TagPoints
+                        where answerIds.Contains(tagpoint.AnswerId)
+                        select tagpoint
+                    )
+                    on tag.Id equals tagpoints.TagId into grouping
+                where grouping.Sum(tp => tp.Point) > 0
+                select new { tag, points = grouping.Sum(tp => tp.Point) }
+            ).Take(5).OrderByDescending(t => t.points).ToList();
+
+            var apiFetcher = new ApiFetcher(_context);
+
+            // ugly hack but we're running out of time (as if everything else is pretty)
+            for (int amount = scores.Count; amount > 0; amount--) {
+                try {
+                    var subset = scores.Take(amount).ToDictionary(score => score.tag, score => score.points);
+                    return apiFetcher.GetGameFromApi(subset);
+                } catch { }
+            }
+
+            return null;
         }
     }
 }

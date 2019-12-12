@@ -2,15 +2,19 @@
  * A video.
  * 
  * @typedef {Object} Video
- * @property {number} videoId
+ * @property {number} id
+ * @property {number} order
  * @property {string} path
  * @property {string} ambiencePath
+ * @property {number|null} videoSequenceId
  */
 
 /**
  * A video sequence.
  * 
- * @typedef {Video[]} VideoSequence
+ * @typedef {Object} VideoSequence
+ * @property {number} id
+ * @property {Video[]} videos
  */
 
 /**
@@ -19,9 +23,10 @@
  * @typedef {Object} Question
  * @property {number} id
  * @property {string} description
- * @property {string} type
+ * @property {string} motivePath
+ * @property {number} ordering
+ * @property {number|null} introVideoId
  * @property {VideoSequence} introVideo
- * @property {string} ambience
  * @property {Answer[]} answers
  */
 
@@ -31,9 +36,27 @@
  * @typedef {Object} Answer
  * @property {number} id
  * @property {string} text
- * @property {string} image
+ * @property {string} imagePath
+ * @property {number} answerOrder
+ * @property {number|null} outroVideoId
  * @property {VideoSequence} outroVideo
- * @property {Question|null} followUpQuestion
+ * @property {number} questionId
+ * @property {number|null} followUpQuestionId
+ * @property {Question} followUpQuestion
+ */
+
+ 
+/**
+ * A game.
+ * 
+ * @typedef {Object} Game
+ * @property {number} id
+ * @property {number} gameId
+ * @property {string} title
+ * @property {string} slug
+ * @property {string} backgroundImage
+ * @property {number} avgRating
+ * @property {string} trailer
  */
 
 class DreamApi {
@@ -41,13 +64,63 @@ class DreamApi {
         this.baseUrl = baseUrl;
     }
 
+    /**
+     * Gets the questions to ask from the server.
+     *
+     * @returns {Promise<Question[]>}
+     * @memberof DreamApi
+     */
     async getQuestions() {
         const response = await fetch(`${this.baseUrl}/question`);
+        return await response.json();
+    }
+
+    /**
+     * Posts the answers to the server and receives back a game.
+     *
+     * @param {number[]} answers
+     * @returns {Promise<Game>}
+     * @memberof DreamApi
+     */
+    async getResult(answers) {
+        const response = await fetch(`${this.baseUrl}/question/result`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(answers)
+        });
         return await response.json();
     }
 }
 
 class App {
+
+    constructor() {
+        this.player = document.querySelector('#scenario video');
+
+        this.audio = new Audio();
+        this.audio.loop = true;
+
+        this.api = new DreamApi('api');
+
+        this.api.getQuestions().then(questions => this.questions = questions);
+
+        const answerContainer = document.getElementById('answers');
+        answerContainer.addEventListener('click', e => {
+            if (this.player.playing || e.target === answerContainer)
+                return;
+
+            const button = e.target.closest('button');
+            const answerId = parseInt(button.getAttribute('answer-id'));
+            this.onAnswerClicked(answerId);
+        });
+
+        document.addEventListener('keypress', e => {
+            if (e.keyCode === 32) {
+                if (!this.player.ended && this.player.duration !== NaN)
+                    this.player.currentTime = this.player.duration;
+            }
+        });
+    }
 
     /**
      * @type {Question}
@@ -57,6 +130,8 @@ class App {
     }
 
     /**
+     * Changes the question, updating the view accordingly.
+     * 
      * @param {number[]} path
      * @memberof App
      */
@@ -86,34 +161,12 @@ class App {
         }
     }
 
-    constructor() {
-        this.player = document.querySelector('#scenario video');
-
-        this.audio = new Audio();
-        this.audio.loop = true;
-
-        this.api = new DreamApi('api');
-
-        this.api.getQuestions().then(questions => this.questions = questions);
-
-        const answerContainer = document.getElementById('answers');
-        answerContainer.addEventListener('click', e => {
-            if (this.player.playing || e.target === answerContainer)
-                return;
-
-            const button = e.target.closest('button');
-            const answerId = button.getAttribute('answer-id');
-            this.onAnswerClicked(answerId);
-        });
-
-        document.addEventListener('keypress', e => {
-            if (e.keyCode === 32) {
-                if (!this.player.ended && this.player.duration !== NaN)
-                    this.player.currentTime = this.player.duration;
-            }
-        });
-    }
-
+    /**
+     * Toggles the visibility of the video overlay.
+     *
+     * @param {boolean} show Whether to show or hide the overlay.
+     * @memberof App
+     */
     toggleOverlay(show) {
         const motive = document.querySelector('.motive');
         const questionContainer = document.querySelector('.question-container');
@@ -122,11 +175,25 @@ class App {
         questionContainer.classList.toggle('shown', show);
     }
 
+    /**
+     * Starts playing a sequence of videos and returns a promise that resolves when all videos have ended.
+     *
+     * @param {VideoSequence} sequence
+     * @returns {Promise<void>}
+     * @memberof App
+     */
     async playVideoSequence(sequence) {
         for (const video of sequence.videos)
             await this.playVideoAsync(video);
     }
 
+    /**
+     * Starts playing a video and returns a promise that resolves when the video has ended. 
+     *
+     * @param {Video} video
+     * @returns {Promise<void>}
+     * @memberof App
+     */
     playVideoAsync(video) {
         if (!video.ambiencePath)
             this.audio.pause();
@@ -195,9 +262,17 @@ class App {
             this.showResults();
     }
 
-    showResults() {
+    /**
+     * Switches to the result screen
+     *
+     * @memberof App
+     */
+    async showResults() {
         document.getElementById('scenario').hidden = true;
         document.getElementById('results').hidden = false;
+
+        const game = await this.api.getResult(this.answers);
+        document.getElementById('gametitle').innerText = game.title;
     }
 
     /**
