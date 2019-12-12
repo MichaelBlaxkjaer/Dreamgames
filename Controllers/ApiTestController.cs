@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using dreamgames.Classes;
 using DreamGames.Database.Context;
@@ -22,33 +23,33 @@ namespace dreamgames.Controllers
         public ActionResult Index()
         {
             api = new ApiFetcher(_context);
-            Dictionary<Tag, int> test = new Dictionary<Tag, int>();
-            test.Add(new Tag()
-            {
-                RawGTagId = 36,
-                Slug = "open-world",
-                TagName = "Open World"
-            }, 4);
-            test.Add(new Tag()
-            {
-                RawGTagId = 7,
-                Slug = "multiplayer",
-                TagName = "Multiplayer"
-            }, 1);
-            test.Add(new Tag()
-            {
-                RawGTagId = 24,
-                Slug = "rpg",
-                TagName = "RPG"
-            }, 3);
-            test.Add(new Tag()
-            {
-                RawGTagId = 32,
-                Slug = "sci-fi",
-                TagName = "Sci-Fi"
-            }, 1);
-            test.OrderBy(e => e.Value);
-            Game rawr = api.GetGameFromApi(test);
+            //Dictionary<Tag, int> test = new Dictionary<Tag, int>();
+            //test.Add(new Tag()
+            //{
+            //    RawGTagId = 36,
+            //    Slug = "open-world",
+            //    TagName = "Open World"
+            //}, 4);
+            //test.Add(new Tag()
+            //{
+            //    RawGTagId = 7,
+            //    Slug = "multiplayer",
+            //    TagName = "Multiplayer"
+            //}, 1);
+            //test.Add(new Tag()
+            //{
+            //    RawGTagId = 24,
+            //    Slug = "rpg",
+            //    TagName = "RPG"
+            //}, 3);
+            //test.Add(new Tag()
+            //{
+            //    RawGTagId = 32,
+            //    Slug = "sci-fi",
+            //    TagName = "Sci-Fi"
+            //}, 1);
+            //test.OrderBy(e => e.Value);
+            //Game rawr = api.GetGameFromApi(test);
 
 
             return View();
@@ -56,6 +57,14 @@ namespace dreamgames.Controllers
         public ApiTestController(ContentContext context)
         {
             _context = context;
+        }
+        public async Task<ActionResult<string>> GetApiResponse(string param)
+        {
+            string url = "https://api.rawg.io/api/games?" + param;
+            using (HttpClient client = new HttpClient())
+            {
+                return await client.GetStringAsync(url);
+            }
         }
         [HttpPost]
         public ActionResult GetGames(IFormCollection collection)
@@ -65,7 +74,7 @@ namespace dreamgames.Controllers
             { 
                 tags +=  item + ",";
             }
-            string response = api.GetApiResponse("tags="+tags).Result.Value;
+            string response = GetApiResponse("tags="+tags).Result.Value;
             ViewData["test"] = response;
             return View("Index");
         }
@@ -91,7 +100,7 @@ namespace dreamgames.Controllers
               
                 foreach (var tag in tags)
                 {
-                    string response = api.GetApiResponse("tags=" + tag.RawGTagId + "&page_size=5").Result.Value;
+                    string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=5").Result.Value;
                     var jsonObjects = JObject.Parse(response).SelectToken("results").Values<object>().ToList();
 
                     foreach (var item in jsonObjects)

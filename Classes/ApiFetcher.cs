@@ -20,15 +20,7 @@ namespace dreamgames.Classes
         {
             _context = context;
         }
-        [HttpGet]
-        public async Task<ActionResult<string>> GetApiResponse(string param)
-        {
-            string url = "https://api.rawg.io/api/games?" + param;
-            using (HttpClient client = new HttpClient())
-            {
-                return await client.GetStringAsync(url);
-            }
-        }
+        
 
         public Game GetGameFromApi(Dictionary<Tag, int> TopTags)
         {
