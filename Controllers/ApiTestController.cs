@@ -16,12 +16,41 @@ namespace dreamgames.Controllers
     public class ApiTestController : Controller
     {
         private readonly ContentContext _context;
-        ApiFetcher api = new ApiFetcher();
+
+        private ApiFetcher api;
         // GET: ApiTest
         public ActionResult Index()
         {
-            
-            
+            api = new ApiFetcher(_context);
+            Dictionary<Tag, int> test = new Dictionary<Tag, int>();
+            test.Add(new Tag()
+            {
+                RawGTagId = 36,
+                Slug = "open-world",
+                TagName = "Open World"
+            }, 4);
+            test.Add(new Tag()
+            {
+                RawGTagId = 7,
+                Slug = "multiplayer",
+                TagName = "Multiplayer"
+            }, 1);
+            test.Add(new Tag()
+            {
+                RawGTagId = 24,
+                Slug = "rpg",
+                TagName = "RPG"
+            }, 3);
+            test.Add(new Tag()
+            {
+                RawGTagId = 32,
+                Slug = "sci-fi",
+                TagName = "Sci-Fi"
+            }, 1);
+            test.OrderBy(e => e.Value);
+            Game rawr = api.GetGameFromApi(test);
+
+
             return View();
         }
         public ApiTestController(ContentContext context)
