@@ -92,7 +92,7 @@ class App {
         this.audio = new Audio();
         this.audio.loop = true;
 
-        this.api = new DreamApi('https://localhost:5001/api');
+        this.api = new DreamApi('api');
 
         this.api.getQuestions().then(questions => this.questions = questions);
 
