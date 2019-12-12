@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using dreamgames.Classes;
 using DreamGames.Database.Context;
 using dreamgames.Database.Games;
 using DreamGames.Database.Games;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -97,50 +100,55 @@ namespace dreamgames.Controllers
             try
             {
                 var tags = _context.Tags.ToList();
-              
-                foreach (var tag in tags)
+                for (int i = 1; i < 10; i++)
                 {
-                    string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=55").Result.Value;
-                    var jsonObjects = JObject.Parse(response).SelectToken("results").Values<object>().ToList();
-
-                    foreach (var item in jsonObjects)
+                    foreach (var tag in tags)
                     {
-                        var jobj = JObject.Parse(item.ToString());
-                        Game game = new Game()
+                        string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=40&page="+i).Result.Value;
+                        var jsonObjects = JObject.Parse(response).SelectToken("results").Values<object>().ToList();
+                        Thread.Sleep(500);
+                        foreach (var item in jsonObjects)
                         {
-                            GameId = jobj["id"].Value<int>(),
-                            Title = jobj["name"].Value<string>(),
-                            Slug = jobj["slug"].Value<string>(),
-                            BackgroundImage = jobj["background_image"].Value<string>(),
-                            AvgRating = jobj["rating"].Value<float>(),
-                            Trailer = jobj["clip"]["clip"].Value<string>()
-                        };
-                        GameTagJunction gameTagJunction = new GameTagJunction()
-                        {
-                            GameId = jobj["id"].Value<int>(),
-                            TagId = tag.RawGTagId
-                        };
-                        if (!_context.Games.Any(e => e.GameId == game.GameId))
-                        {
-                            _context.Games.Add(game);
+                            var jobj = JObject.Parse(item.ToString());
+                           
+                            Game game = new Game()
+                            {
+                                GameId = jobj["id"].Value<int>(),
+                                Title = jobj["name"].Value<string>(),
+                                Slug = jobj["slug"].Value<string>(),
+                                BackgroundImage = jobj["background_image"].Value<string>(),
+                                AvgRating = jobj["rating"].Value<float>(),
+                                Trailer = "trailer"
+                            };
+                            GameTagJunction gameTagJunction = new GameTagJunction()
+                            {
+                                GameId = jobj["id"].Value<int>(),
+                                TagId = tag.RawGTagId
+                            };
+                            if (!_context.Games.Any(e => e.GameId == game.GameId))
+                            {
+                                _context.Games.Add(game);
+                                
+                            }
+
+                            if (!_context.GameTagJunction.Any(e =>
+                                e.GameId == game.GameId && e.TagId == gameTagJunction.TagId))
+                            {
+                                _context.GameTagJunction.Add(gameTagJunction);
+                            }
+                            
+                            _context.SaveChanges();
                             
                         }
-
-                        if (!_context.GameTagJunction.Any(e =>
-                            e.GameId == game.GameId && e.TagId == gameTagJunction.TagId))
-                        {
-                            _context.GameTagJunction.Add(gameTagJunction);
-                        }
-                        
-                        _context.SaveChanges();
                     }
 
+                    
                 }
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(InvalidCastException e)
             {
-                return View();
+                return View(nameof(Index));
             }
         }
 
