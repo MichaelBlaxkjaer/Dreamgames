@@ -61,6 +61,14 @@ namespace dreamgames.Controllers
         {
             _context = context;
         }
+        /// <summary>
+        /// Here we have a function that gets us the needed games via a parameter
+        /// we send along, and since its an async task, it wont actually move on
+        /// until we have some sort of response, meaning the code wouldnt end up
+        /// lacking the needed data down the line.
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public async Task<ActionResult<string>> GetApiResponse(string param)
         {
             string url = "https://api.rawg.io/api/games?" + param;
@@ -69,6 +77,11 @@ namespace dreamgames.Controllers
                 return await client.GetStringAsync(url);
             }
         }
+        /// <summary>
+        /// This is an admin tool used to test the api.
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult GetGames(IFormCollection collection)
         {
@@ -92,25 +105,42 @@ namespace dreamgames.Controllers
         {
             return View();
         }
-
-        // POST: ApiTest/Create
+        /// <summary>
+        /// Here we sync the API, when the "Sync" button is pressed, we run through the API
+        /// provided by RawG and save the contents to our own database, this is done
+        /// due to the api RawG provides is severely lacking on documentation as well
+        /// as lacking many features needed to properly use it. So, we decided to use the
+        /// data and make our own tools to use the data.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult SyncApi()
         {
             try
             {
+                //Here we get all the tags we have in the database into a list
                 var tags = _context.Tags.ToList();
+                //This for loop runs through 10 times, each time increasing the page number
+                //we give the API to get more games since each call only returns 40 games at most
                 for (int i = 1; i < 10; i++)
                 {
+                    //Here we run through the tags, the tag is then put into the api url, allowing us
+                    //to make an api call for each tag, thus populating our database with games from
+                    //all the tags we've decided on.
                     foreach (var tag in tags)
                     {
+                        //Here we put together the api call and sends it along to the function that actually calls on the api
                         string response = GetApiResponse("tags=" + tag.RawGTagId + "&page_size=40&page="+i).Result.Value;
+                        //We get a json object back, so here we make sure code knows this is what we want, allowing us to make a list out of the objects
                         var jsonObjects = JObject.Parse(response).SelectToken("results").Values<object>().ToList();
+                        //Here we sleep the thread, making sure we wont get an automatic IP ban for overloading the api
                         Thread.Sleep(500);
+                        //Here we go through all the objects.
                         foreach (var item in jsonObjects)
                         {
+                            //The code couldnt seen to understand what each item were in the list, so here we make sure to parse it properly.
                             var jobj = JObject.Parse(item.ToString());
-                           
+                            //Here we create our game object, using the keys from the json object to tell our code where to get each variable.
                             Game game = new Game()
                             {
                                 GameId = jobj["id"].Value<int>(),
@@ -120,23 +150,29 @@ namespace dreamgames.Controllers
                                 AvgRating = jobj["rating"].Value<float>(),
                                 Trailer = "trailer"
                             };
+                            //Here we likewise do what we did above, making a new GameTagJunction object so we can save it in the database
                             GameTagJunction gameTagJunction = new GameTagJunction()
                             {
                                 GameId = jobj["id"].Value<int>(),
                                 TagId = tag.RawGTagId
                             };
+                            //Here we make sure the game isnt already in the database, since the api
+                            //would return the same game over and over if more than one our tags
+                            //were present in the api. If its not already in our database, we go ahead and add it
                             if (!_context.Games.Any(e => e.GameId == game.GameId))
                             {
                                 _context.Games.Add(game);
                                 
                             }
-
+                            //Here we do likewise, if the game is already already in the database,
+                            //then check if the tag is also there. If both are already there, dont add
+                            //it again. However, if the game is there, but the tag is not, then add it
                             if (!_context.GameTagJunction.Any(e =>
                                 e.GameId == game.GameId && e.TagId == gameTagJunction.TagId))
                             {
                                 _context.GameTagJunction.Add(gameTagJunction);
                             }
-                            
+                            //Finally, we save the entire thing
                             _context.SaveChanges();
                             
                         }
