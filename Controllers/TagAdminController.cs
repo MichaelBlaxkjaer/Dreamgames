@@ -38,6 +38,8 @@ namespace dreamgames.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+
+        //Creates a tag in the context so it adds a new tag and then saves the changes in the context database.
         public ActionResult CreateTag(Tag taggy)
         {
             

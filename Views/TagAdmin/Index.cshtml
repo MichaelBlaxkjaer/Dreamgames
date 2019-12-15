@@ -7,6 +7,9 @@
 @using DreamGames.Database.Games;
 @model Tag
 
+@*View for the TagAdmin controller so we can enter TagName,Slug and RawGTagId
+So that we can add new tags through this function instead of manually coding new tags
+in the context database.*@
 
     <form method="post" asp-controller="TagAdmin" asp-action="CreateTag">
         <div><strong>Add tags</strong></div>
